@@ -1,81 +1,99 @@
 import streamlit as st
+from supabase import create_client
 
-# --- قائمة المستخدمين وكلمات المرور ---
-users = {
-    "a": "s",
-    "user1": "pass123",
-    "user2": "mypassword",
-    "admin": "admin123"
-}
+# ---------------- Supabase ----------------
+SUPABASE_URL = "https://utvubafvttzbuvlkchig.supabase.co"
+SUPABASE_KEY = "sb_publishable_GOeCyF4B9YODOXDLNWu7HQ_JAib3deP"
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# --- حالة تسجيل الدخول ---
+# ---------------- Session State ----------------
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
+if "show_signup" not in st.session_state:
+    st.session_state.show_signup = False
+if "user_email" not in st.session_state:
+    st.session_state.user_email = ""
 
-# --- تسجيل الدخول ---
+# ---------------- عنوان التطبيق ----------------
+st.markdown("""
+<h1 style='text-align:center;margin-top:50px;font-size:clamp(26px,4vw,42px);font-weight:600;'>
+Beam Designer
+</h1>
+""", unsafe_allow_html=True)
+
+# ---------------- تسجيل الدخول أو إنشاء حساب ----------------
 if not st.session_state.logged_in:
-    # --- عرض العنوان في وسط الشاشة ---
-    st.markdown("""
-    <h1 style='text-align: center;margin-top: 50px; font-size: clamp(26px, 4vw, 42px);font-weight: 600;'>01Beam designer</h1>
-    """, unsafe_allow_html=True)
 
-    username = st.text_input("User name")
-    password = st.text_input("Password", type="password")
-    login_button = st.button("Login")
+    if st.session_state.show_signup:
+        # ---------- شاشة إنشاء حساب ----------
+        st.subheader("Create New Account")
+        new_email = st.text_input("Email", key="signup_email")
+        new_password = st.text_input("Password", type="password", key="signup_pass")
 
-    if login_button:
-        if username in users and users[username] == password:
-            st.session_state.logged_in = True
+        if st.button("Create Account", key="create_acc"):
+            if new_email and new_password:
+                try:
+                    supabase.table("users").insert({
+                        "email": new_email,
+                        "password": new_password
+                    }).execute()
+                    st.success("✅ Account created successfully!")
+                    st.session_state.logged_in = True
+                    st.session_state.user_email = new_email
+                    st.session_state.show_signup = False
+                    st.experimental_rerun()
+                except Exception:
+                    st.error("❌ Email already exists")
+            else:
+                st.error("❌ Please fill all fields")
+
+        if st.button("Back to Login", key="back_login"):
+            st.session_state.show_signup = False
             st.experimental_rerun()
-        else:
-            st.error("❌ Username or Password is incorrect")
 
+    else:
+        # ---------- شاشة تسجيل الدخول ----------
+        st.subheader("Login")
+        login_email = st.text_input("Email", key="login_email")
+        login_pass = st.text_input("Password", type="password", key="login_pass")
 
-# --- صفحة بعد تسجيل الدخول ---
+        if st.button("Login", key="login_btn"):
+            result = supabase.table("users").select("*").eq("email", login_email).eq("password", login_pass).execute()
+            if result.data:
+                st.session_state.logged_in = True
+                st.session_state.user_email = login_email
+                st.experimental_rerun()
+            else:
+                st.error("❌ Email or Password is incorrect")
+
+    # زر إنشاء حساب جديد يظهر دائمًا
+    st.markdown("<hr>", unsafe_allow_html=True)
+    if st.button("➕ Create New Account", key="show_signup_btn"):
+        st.session_state.show_signup = True
+        st.experimental_rerun()
+
+# ---------------- بعد تسجيل الدخول ----------------
 if st.session_state.logged_in:
-    # --- عرض العنوان في وسط الشاشة من الأعلى ---
-
-    st.markdown("""
-    <h1 style='
-        text-align: center;
-        margin-top: -60px;
-        font-size: clamp(26px, 4vw, 42px);
-        font-weight: 600;
-    '>
-    01Beam designer
+    st.markdown(f"""
+    <h1 style='text-align:center;margin-top:-60px;font-size:clamp(26px,4vw,42px);font-weight:600;'>
+    Beam Designer
     </h1>
+    <p style='text-align:center;'>Welcome {st.session_state.user_email}</p>
     """, unsafe_allow_html=True)
 
-
-
-    #st.markdown("""
-    #<h1 style='text-align: center; margin-top: -60px;'>Beam designer</h1>
-    #""", unsafe_allow_html=True)
-
-    # --- شريط جانبي مع قائمة منسدلة عند الضغط على File ---
     st.sidebar.title("Menu")
+    with st.sidebar.expander("Beam section"):
+        st.button("Rectangle")
+        st.button("T shape")
+        st.button("L shape")
+        st.button("Trapezoid")
+        st.button("Triangle")
 
-    # قائمة File منسدلة باستخدام expander
-    with st.sidebar.expander("Beam section", expanded=False):
-        if st.button("rectangle"):
-            st.write("📄 تم إنشاء ملف جديد!")
-        if st.button("T shape"):
-            st.write("📂 تم فتح ملف موجود!")
-        if st.button("L shape"):
-            st.write("📂 تم فتح ملف موجود!")
-        if st.button("Trapezoid"):
-            st.write("📂 تم فتح ملف موجود!")
-        if st.button("Triangle"):
-            st.write("📂 تم فتح ملف !")
-    # قائمة Edit منسدلة باستخدام expander
-    with st.sidebar.expander("Edit", expanded=False):
-        if st.button("Undo"):
-            st.write("↩️ تم التراجع")
-        if st.button("Redo"):
-            st.write("↪️ إعادة تنفيذ")
+    with st.sidebar.expander("Edit"):
+        st.button("Undo")
+        st.button("Redo")
 
-    # زر تسجيل الخروج
     if st.sidebar.button("Logout"):
         st.session_state.logged_in = False
+        st.session_state.user_email = ""
         st.experimental_rerun()
-##       streamlit run app.py
