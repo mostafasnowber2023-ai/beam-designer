@@ -2,6 +2,7 @@ import streamlit as st
 
 # --- قائمة المستخدمين وكلمات المرور ---
 users = {
+    "a": "s",
     "user1": "pass123",
     "user2": "mypassword",
     "admin": "admin123"
@@ -15,7 +16,7 @@ if "logged_in" not in st.session_state:
 if not st.session_state.logged_in:
     # --- عرض العنوان في وسط الشاشة ---
     st.markdown("""
-    <h1 style='text-align: center; margin-top: 50px;'>Beam designer</h1>
+    <h1 style='text-align: center;margin-top: 50px; font-size: clamp(26px, 4vw, 42px);font-weight: 600;'>01Beam designer</h1>
     """, unsafe_allow_html=True)
 
     username = st.text_input("User name")
@@ -33,9 +34,23 @@ if not st.session_state.logged_in:
 # --- صفحة بعد تسجيل الدخول ---
 if st.session_state.logged_in:
     # --- عرض العنوان في وسط الشاشة من الأعلى ---
+
     st.markdown("""
-    <h1 style='text-align: center; margin-top: 20px;'>Beam designer</h1>
+    <h1 style='
+        text-align: center;
+        margin-top: -60px;
+        font-size: clamp(26px, 4vw, 42px);
+        font-weight: 600;
+    '>
+    01Beam designer
+    </h1>
     """, unsafe_allow_html=True)
+
+
+
+    #st.markdown("""
+    #<h1 style='text-align: center; margin-top: -60px;'>Beam designer</h1>
+    #""", unsafe_allow_html=True)
 
     # --- شريط جانبي مع قائمة منسدلة عند الضغط على File ---
     st.sidebar.title("Menu")
@@ -63,3 +78,4 @@ if st.session_state.logged_in:
     if st.sidebar.button("Logout"):
         st.session_state.logged_in = False
         st.experimental_rerun()
+##       streamlit run app.py
