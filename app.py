@@ -251,7 +251,7 @@ if st.session_state.step == "disable":
     st.write("---")
     st.info("After payment, your account will be activated and you will be able to log in immediately.")
 
-    if st.button("Back to Login"):
+    if st.button("Logout"):
         st.session_state.step = "login"
 
 # ================= WELCOME =================
