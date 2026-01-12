@@ -253,6 +253,7 @@ if st.session_state.step == "disable":
 
     if st.button("Logout"):
         st.session_state.step = "login"
+        st.rerun()
 
 # ================= WELCOME =================
 if st.session_state.step == "welcome" and st.session_state.logged_in:
