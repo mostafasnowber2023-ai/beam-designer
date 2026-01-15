@@ -15,8 +15,6 @@ import numpy as np
 # ===== مكتبات للتعامل مع الصور ===========================
 from io import BytesIO
 from PIL import Image
-# ===== مكتبات للعرض الرياضي (Jupyter/Colab) ==============
-#from IPython.display import display, Math  # يمكن الاستغناء عنها في Streamlit
 
 # ========== print with st.markdown function ================
 def prin(
