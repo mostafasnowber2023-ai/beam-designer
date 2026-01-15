@@ -1,3 +1,23 @@
+
+# link5.py    moment calculator 
+
+
+# ===== مكتبات أساسية ======================================
+import streamlit as st
+import math
+import pandas as pd
+import uuid
+# ===== مكتبات رسومات ومخططات =============================
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+from matplotlib.patches import FancyArrowPatch
+import numpy as np
+# ===== مكتبات للتعامل مع الصور ===========================
+from io import BytesIO
+from PIL import Image
+# ===== مكتبات للعرض الرياضي (Jupyter/Colab) ==============
+from IPython.display import display, Math  # يمكن الاستغناء عنها في Streamlit
+
 # ========== print with st.markdown function ================
 def prin(
     x,
