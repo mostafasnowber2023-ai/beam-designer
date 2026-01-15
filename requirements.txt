@@ -2,13 +2,5 @@ streamlit
 supabase
 numpy
 pandas
-supabase 
-math
-pandas 
-uuid
-matplotlib.pyplot
-matplotlib.patches
-matplotlib.patches
-io 
-PIL 
-IPython.display
+matplotlib
+pillow
