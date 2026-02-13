@@ -289,7 +289,7 @@ def Strain_Diagram(d , c , ds):
     plt.show()
 
 # =================== Moment_Beam() =====================
-def Moment_Beam(Mu , b , h , fc , fy ,nd) :
+def Moment_Beam(Mu , b , h , fc , fy ,nd = 7) :
   prin("Beam Design for Moment",p=2,m=18,d=25)
   prin("The given data are as follows",p=2)
   st.latex(rf"""
