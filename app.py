@@ -1,4 +1,8 @@
-# link 4
+# هذا الكود جاهز للنشر 
+# يحسب المومنت 
+# تصميم 
+# تحليل 
+
 
 import streamlit as st
 from supabase import create_client
@@ -431,7 +435,7 @@ def lat(a=1, b=3, t=""):
 la = lambda a=1, b=3, t="": [st.latex(t) for c in [st.columns([a,b])] for _ in [c[0]]]
 
 # =================== Poto_Singly() =======================
-def Poto_Singly(b, h, d, fig_width=2.2, fig_height=3.2):
+def Poto_Singly(b, h, d, fig_width=2.2, fig_height=3.2, As=0):
     v , c = 0.5 , 0.8
     main_color = "white"
     fig, ax = plt.subplots(figsize=(fig_width, fig_height))
@@ -445,7 +449,11 @@ def Poto_Singly(b, h, d, fig_width=2.2, fig_height=3.2):
     for x in x_positions:
         ax.add_patch(patches.Circle((x, steel_y), 0.03, edgecolor=main_color, facecolor='none', linewidth=1.3))
     # كتابة As
-    ax.text(v/2, steel_y + 0.07, "As", color=main_color, ha='center', va='bottom', fontsize=10)
+    if As == 0 :
+        ax.text(v/2, steel_y + 0.07, "As", color=main_color, ha='center', va='bottom', fontsize=10)
+    else :
+        ax.text(v/2, steel_y + 0.07, f'As = {As}', color=main_color, ha='center', va='bottom', fontsize=10)
+
     # خط قياس d خارج المستطيل
     offset = 0.1
     x_d = v + offset
@@ -474,7 +482,7 @@ def Poto_Singly(b, h, d, fig_width=2.2, fig_height=3.2):
     with w[1]:st.image(img, caption="Singley Reinforced Beam Section", width=250)
 
 # ========================= Poto_doubly() ========================
-def Poto_doubly(b, h, dc, dt, fig_width=2.2, fig_height=3.2):
+def Poto_doubly(b, h, dc, dt, fig_width=2.2, fig_height=3.2, As_T=0 , As_C=0):
     v, c = 0.5, 0.8
     main_color = "white"
     fig, ax = plt.subplots(figsize=(fig_width, fig_height))
@@ -495,8 +503,12 @@ def Poto_doubly(b, h, dc, dt, fig_width=2.2, fig_height=3.2):
         ax.add_patch(patches.Circle((x, steel_yt), 0.03, edgecolor=main_color, facecolor='none', linewidth=1.3))
 
     # كتابة As و As'
-    ax.text(v/2, steel_y - 0.12, "As'", color=main_color, ha='center', va='bottom', fontsize=10)
-    ax.text(v/2, steel_yt + 0.07, "As", color=main_color, ha='center', va='bottom', fontsize=10)
+    if As_T ==0 and As_C ==0 :
+        ax.text(v/2, steel_y - 0.12, "As'", color=main_color, ha='center', va='bottom', fontsize=10)
+        ax.text(v/2, steel_yt + 0.07, "As", color=main_color, ha='center', va='bottom', fontsize=10)
+    else :
+        ax.text(v/2, steel_y - 0.12, f"As' = {As_C}", color=main_color, ha='center', va='bottom', fontsize=10)
+        ax.text(v/2, steel_yt + 0.07, f'As = {As_T}', color=main_color, ha='center', va='bottom', fontsize=10)
 
     # خطوط القياس d و d'
     offset = 0.05
@@ -614,28 +626,43 @@ def TS(b,side_cover,As) :
         prin('➔ You can choose only one option with its corresponding spacing ',p=2)
 
 # =================== Strain Diagram function =====================
-def Strain_Diagram(d , c , ds):
+def Strain_Diagram(d , c , ds , D_A = 0):
     main_color = "white"
     fig, ax = plt.subplots(figsize=(2.2, 3.4))
 
     A , B , C , D , E , F = 0.25 , 0.6 , 0.2 , 0.35 , 0.25 , 0.1
 
     ax.plot( [A, A+C          ], [B, B          ], color=main_color, linewidth=1.6 ) # خط سترين الباطون
-    ax.plot( [A, (B-F)*(A+C)/B], [B-F, B-F      ], color=main_color, linewidth=1.6 ) # خط سترين الحديد العلوي
+    if D_A == 1:
+        pass
+    else :
+        ax.plot( [A, (B-F)*(A+C)/B], [B-F, B-F      ], color=main_color, linewidth=1.6 ) # خط سترين الحديد العلوي
+        ax.plot( [A-0.15 , A-0.15 ], [B, B-F        ], color=main_color, linewidth=1.6 ) # خط البعد القصير
+
     ax.plot( [0, A            ], [0, 0          ], color=main_color, linewidth=1.6 ) # خط سترين الحديد السفلي
     ax.plot( [A, A            ], [B, 0          ], color=main_color, linewidth=1.6 ) # الخط السترين العمودي ليس خط بعد
     ax.plot( [A+C, 0          ], [B, 0          ], color=main_color, linewidth=1.6 ) # الخط المائل
     ax.plot( [A+D, A+D        ], [B, 0          ], color=main_color, linewidth=1.6 ) # خط البعد الطويل
     ax.plot( [A+E, A+E        ], [B, (A*B)/(A+C)], color=main_color, linewidth=1.6 ) # خط البعد المتوسط
-    ax.plot( [A-0.15 , A-0.15 ], [B, B-F        ], color=main_color, linewidth=1.6 ) # خط البعد القصير
+    #ax.plot( [A-0.15 , A-0.15 ], [B, B-F        ], color=main_color, linewidth=1.6 ) # خط البعد القصير
 
     ax.text(A+0.1,B+0.05,r"$\varepsilon_{c}=0.003$",color=main_color,ha='center',fontsize=10)
-    ax.text(A-0.1, B-F  ,r"$\varepsilon_s'$"       ,color=main_color            ,fontsize=10)
-    ax.text(0, -0.08    ,r"$\varepsilon_s =0.005$" ,color=main_color            ,fontsize=10)
+    if D_A == 1 :
+        pass
+    else :
+        ax.text(A-0.1, B-F  ,r"$\varepsilon_s'$"       ,color=main_color            ,fontsize=10)
+
+    if D_A == 0 or D_A == 1:
+        ax.text(0, -0.08    ,r"$\varepsilon_s =0.005$" ,color=main_color            ,fontsize=10)
+    else : 
+        ax.text(0.1, -0.04    ,r"$\varepsilon_s$" ,color=main_color            ,fontsize=10)
 
     ax.text( A+D+0.05 , B/2                  , f"d = {d} mm"     , rotation=90, color=main_color,  fontsize=7, va='center' )
     ax.text( A+E+0.025, (B+(A*B)/(A+C))/2    , f"C = {c} mm"     , rotation=90, color=main_color,  fontsize=7, va='center' )
-    ax.text( A-0.21   , (B+(A*B)/(A+C))/2+0.1, f"d' = {ds} mm", rotation=90, color=main_color,  fontsize=7, va='center' )
+    if D_A == 1 :
+        pass
+    else :
+        ax.text( A-0.21   , (B+(A*B)/(A+C))/2+0.1, f"d' = {ds} mm", rotation=90, color=main_color,  fontsize=7, va='center' )
 
     ax.set_xlim(0, 0.7)
     ax.set_ylim(0, 0.7)
@@ -773,6 +800,197 @@ def Moment_Beam(Mu , b , h , fc , fy , nd , T_cover , C_cover) :
 #Moment_Beam(1100,350,700,30,420,7)
 #Moment_Beam(Mu , b , h , fc , fy, nd)
 
+def asd ( a,As_C_A , As_T_A , b , h , fc , fy , T_cover , C_cover ,d_C,d_T, pr='print'):
+    if pr == 'print':
+        st.latex(rf"""
+        a = \frac{{(A_s - A'_s)\, f_y}}{{0.85\, f'_c\, b}}
+        = {a:.1f} mm
+        """)
+        prin(r"➔ Let’s calculate β₁",p=2)
+    if fc >= 56 :
+        if pr == 'print':
+            st.latex(rf"\qquad f_c = {fc} \ge 56 \; Mpa \;\Rightarrow\; \beta_1 = 0.65")
+        beta_1 = 0.65
+    elif fc >= 17 and fc <= 28 :
+        if pr == 'print':
+            st.latex(rf"\qquad 17 \le fc = {fc} \le 28\; Mpa \;\; \Rightarrow \; \beta_1 = 0.85")
+        beta_1 = 0.85
+    else :
+        if pr == 'print':
+            st.latex(r"\qquad 28 < f_c = %s < 56\;Mpa \;\;\Rightarrow\;\; \text{Linear Interpolation, use this formula to find } \beta_1" % fc)
+        beta_1 =  round(0.85-0.05*((fc-28)/7),4)
+        if pr == 'print':
+            st.latex(rf"\qquad \beta_1 = 0.85 - 0.05 \left( \frac{{f'_c - 28}}{{7}} \right) = {beta_1}")
+    C = round (a / beta_1,1)
+    if pr == 'print':
+        st.latex(rf"""
+        c = \frac{{a}}{{\beta_1}}
+        = {C:.1f} mm
+        """)
+    k = st.columns([0.7,2,1])
+    with k[1] : 
+        if pr == 'print':
+            Strain_Diagram(d_T , C ,d_C , D_A = 0)
+    epsilon_s_bar = round ((0.003/C)*(C-C_cover),5)
+    if As_C_A == 0:
+        epsilon_s_bar = 0
+    epsilon_s = round ((0.003/C)*(d_T-C),5)
+    if pr == 'print':
+        if As_C_A != 0:
+            st.latex(rf"\varepsilon_s' = {epsilon_s_bar:.5f}")
+        st.latex(rf"\varepsilon_s = {epsilon_s:.5f}")
+    f_s = round(epsilon_s * 200000,0)
+    if f_s > fy :
+        if pr == 'print':
+            st.latex(rf"f_s = \varepsilon_s E_s = {f_s:.0f} \; Mpa > f_y= {fy:.0f} \; Mpa\;\; \Rightarrow \; use \;\; f_s = f_y= {fy:.0f} Mpa")
+        f_s = fy
+    else :
+        if pr == 'print':
+            st.latex(rf"f_s = \varepsilon_s E_s = {f_s:.0f} Mpa")
+    f_s_bar = round(epsilon_s_bar * 200000,0)
+    if pr == 'print':
+        if As_C_A != 0:
+            st.latex(rf"f_s' = \varepsilon_s' E_s = {f_s_bar:.0f} Mpa")
+    Cc = round(0.85 * fc * b * a * 0.001,1)
+    if pr == 'print':
+        st.latex(rf"compression \; in\; concrete, C_c = 0.85 f'_c b a = {Cc:.1f}\; KN")
+    Cs = round(As_C_A * f_s_bar * 0.001,1)
+    if pr == 'print':
+        if As_C_A != 0:
+            st.latex(rf"compression \; in\; steel, C_s = A'_s f'_s = {Cs:.1f}\; KN")
+    T = round(As_T_A * f_s * 0.001,1)
+    if pr == 'print':
+        st.latex(rf"tension \; in\; steel, T = A_s f_s = {T:.1f}\; KN")
+    total_compression = Cs+ Cc
+    if pr == 'print':
+        if As_C_A != 0:
+            st.latex(rf"Total \; compression \; force = C_s + C_c = {total_compression:.1f}\; KN")
+    E = T / total_compression 
+    Error_ = round(abs(E-1) * 100,0)
+    if pr == 'print':
+        if As_C_A != 0 :
+            st.latex(rf"""\frac{{T = {T:.1f}}}{{C = {total_compression:.1f}}}= {E:.2f} \Rightarrow Error = {Error_:.0f}\; \% """)
+            st.markdown("---")
+            st.latex(rf"Try\; a\; new\; value\; of, a:")
+    if pr == 'values' :
+        st.latex(rf"\varepsilon_s' = {epsilon_s_bar:.5f} \Rightarrow f'_s = {f_s_bar:.1f} \; Mpa")
+        st.latex(rf"\varepsilon_s = {epsilon_s:.5f} \Rightarrow f_s = {f_s:.1f} \; Mpa")
+        st.latex(rf""" C_c = {Cc:.1f}\; KN \;\; , \;\; C_s = {Cs:.1f}\; KN \Rightarrow  C = C_c+C_s  \; = \; {total_compression:.1f}\; KN """)
+        #st.latex(rf""" C_s = {Cs:.1f}\; KN """)
+        st.latex(rf""" \Rightarrow\;\; C = {total_compression:.1f}\; KN \;\; , \;\;  T = {T:.1f}\; KN """)
+        E = T / total_compression 
+        Error_ = round(abs(E-1) * 100,0)
+        if As_C_A != 0 :
+            st.latex(rf"""\frac{{T = {T:.1f}}}{{C = {total_compression:.1f}}}= {E:.2f} \Rightarrow Error = {Error_:.0f}\; \% """)
+            prin("""You can recalculate a new value for a to achieve a lower error %, but this is sufficient for now.""")
+        M_by_phi = (Cc*(d_T-0.5*a)+Cs*(d_T-d_C))/1000
+        return epsilon_s , M_by_phi
+    if As_C_A != 0 : pass
+        #st.latex(rf"""\frac{{T = {T:.1f}}}{{C = {total_compression:.1f}}}= {E:.2f} \Rightarrow Error = {Error_:.0f}\; \% """)
+    M_by_phi = (Cc*(d_T-0.5*a)+Cs*(d_T-d_C))/1000
+    return T , Cs ,epsilon_s , M_by_phi
+
+
+def Moment_Beam_A( As_C_A , As_T_A , b , h , fc , fy , nd , T_cover , C_cover) :
+    prin("Beam Design for Moment",p=2,m=18,d=25)
+    prin("The given data are as follows",p=2)
+    if As_C_A == 0:
+        st.latex(rf"""
+        \begin{{aligned}}
+        \qquad f'_{{c}} &= {fc} \text{{ MPa}} \\
+        \qquad f_{{y}} &= {fy} \text{{ MPa}} \\
+        \qquad A_{{s}}T &= {As_T_A} \text{{ mm}}^2
+
+        \end{{aligned}}
+        """)
+    else :
+        st.latex(rf"""
+        \begin{{aligned}}
+        \qquad f'_{{c}} &= {fc} \text{{ MPa}} \\
+        \qquad f_{{y}} &= {fy} \text{{ MPa}} \\
+        \qquad A_{{s}}C &= {As_C_A} \text{{ mm}}^2 \\
+        \qquad A_{{s}}T &= {As_T_A} \text{{ mm}}^2
+
+        \end{{aligned}}
+        """)
+
+    if fc < 17 :
+        st.latex(r"""
+            f'_c < 17 \;\; \text{MPa}
+            \;\;\Rightarrow\;\;
+            \text{concrete cannot be used according to ACI}
+            """) 
+        return
+    #space_lyaer = 40
+    #T_cover = 60
+    #C_cover = 60
+    side_cover = 40
+    d_T = h - T_cover
+    d_C = C_cover
+    #prin("➔ Assume it is a Rectangular section, Singly reinforce with this dimentions",p=2)
+    k = st.columns([0.45,2,1])
+    if As_C_A == 0 :
+        with k[1] : Poto_Singly(b, h, d_T,As =As_T_A )
+    else: 
+        with k[1] : Poto_doubly (b,h,d_C,d_T, As_T=As_T_A , As_C=As_C_A)
+        prin("➔ Assume that both steel yield, so1",p=2)
+    if As_C_A == 0: 
+        a = ((As_T_A - As_C_A)*fy)/(0.85*fc*b)
+        st.latex(rf"""T = C \Rightarrow a = \frac{{A_s f_y}}{{0.85\, f'_c\, b}}= {a:.1f} mm""")
+        if fc >= 56 :
+            st.latex(rf"\qquad f_c = {fc} \ge 56 \; Mpa \;\Rightarrow\; \beta_1 = 0.65")
+            beta_1 = 0.65
+        elif fc >= 17 and fc <= 28 :
+            st.latex(rf"\qquad 17 \le fc = {fc} \le 28\; Mpa \;\; \Rightarrow \; \beta_1 = 0.85")
+            beta_1 = 0.85
+        else :
+            st.latex(r"\qquad 28 < f_c = %s < 56\;Mpa \;\;\Rightarrow\;\; \text{Linear Interpolation, use this formula to find } \beta_1" % fc)
+            beta_1 =  round(0.85-0.05*((fc-28)/7),4)
+            st.latex(rf"\qquad \beta_1 = 0.85 - 0.05 \left( \frac{{f'_c - 28}}{{7}} \right) = {beta_1}")
+        C = round (a / beta_1,1)
+        st.latex(rf"""
+        c = \frac{{a}}{{\beta_1}}
+        = {C:.1f} mm
+        """)
+        Strain_Diagram(d_T , C ,d_C , D_A = 1)
+        epsilon_t = round ((0.003/C)*(d_T-C),5)
+        st.latex(rf"\varepsilon_t = {epsilon_t}")
+
+        if epsilon_t < 0.002 or epsilon_t == 0.002 :
+            phi = 0.65
+            st.latex(rf"\varepsilon_t \le 0.002 \Rightarrow \phi = {phi:.2f}")
+        elif epsilon_t < 0.005 :
+            phi = ((0.9-0.65)*(epsilon_t-0.002))/(0.005-0.002)+0.65
+            st.latex(rf"0.002 < \varepsilon_t < 0.005 \; Interpolation \Rightarrow \phi = {phi:.3f}")
+        elif epsilon_t > 0.005 or epsilon_t == 0.005 :
+            phi = 0.9
+            st.latex(rf"0.005 \le \varepsilon_t \Rightarrow \phi = {phi:.2f}")
+        M_ = round (phi * As_T_A * fy *(d_T-(a/2)) *0.000001,2)
+        st.latex(rf"""\phi M_n = \phi A_s f_y (d - \frac{{a}}{{2}})\;= {M_:.2f} \; KN.M""")
+
+
+        return 
+    a = ((As_T_A - As_C_A)*fy)/(0.85*fc*b)
+    T , Cs , epsilon_s , M_by_phi =  asd (a, As_C_A , As_T_A , b , h , fc , fy , T_cover , C_cover ,d_C,d_T, pr='print')
+    if As_C_A != 0 :
+        a_new = round (1000*(T-Cs)/(0.85 * fc * b),1)
+        st.latex(rf"""a = \frac{{T-C_s}}{{0.85f'_c b}}= {a_new:.1f} \; mm""")
+        st.latex(rf"""Resolve\; for\; a = {a_new:.1f} \; mm""")
+        if As_C_A != 0 :
+            epsilon_s , M_by_phi =  asd (a_new, As_C_A , As_T_A , b , h , fc , fy , T_cover , C_cover ,d_C,d_T, pr='values')
+    if epsilon_s < 0.002 or epsilon_s == 0.002 :
+        phi = 0.65
+        st.latex(rf"\varepsilon_s \le 0.002 \Rightarrow \phi = {phi:.2f}")
+    elif epsilon_s < 0.005 :
+        phi = ((0.9-0.65)*(epsilon_s-0.002))/(0.005-0.002)+0.65
+        st.latex(rf"0.002 < \varepsilon_s < 0.005 \; Interpolation \Rightarrow \phi = {phi:.3f}")
+    elif epsilon_s > 0.005 or epsilon_s == 0.005 :
+        phi = 0.9
+        st.latex(rf"0.005 \le \varepsilon_s \Rightarrow \phi = {phi:.2f}")
+    M = M_by_phi *phi
+    st.latex(rf"""\phi M_n = \phi \left[ C_c \left( d - \frac{{a}}{{2}} \right) + C_s (d - d') \right] = {M:.2f} \;KNM""")
+
+
 # ================= WELCOME =================
 if st.session_state.step == "welcome" and st.session_state.logged_in:
     #st.success(f"Welcome {st.session_state.email}")
@@ -781,16 +999,29 @@ if st.session_state.step == "welcome" and st.session_state.logged_in:
     with L:
         fc = st.text_input("fc' = Concrete compressive strength (Mpa)")
         fy = st.text_input("fy = (Mpa)")
-        M  = st.text_input("Mu = Ultimate Moment (KN.M)")
     with m:
         h  = st.text_input("h = Beam height (mm)")
         b  = st.text_input("b = Beam width (mm)")
     with R:
         Covre_C = st.text_input("Compression steel cover (mm)")
         Covre_T = st.text_input("tension steel cover (mm)")
-    if st.button("Calculate"):
+    A = st.columns([1,1])
+    with A[0]:
+        M  = st.text_input("Mu = Ultimate Moment (KN.M)")
+    with A[1]:
+        As_C_A = st.text_input("area of Compression steel (mm^2)")
+        As_T_A = st.text_input("area of tension steel (mm^2)")
+    #A2 = st.columns([1,1])
+    #with A2[0]:
+    if st.button("Design"):
         Moment_Beam (float(M), float(b), float(h), float(fc), float(fy), 7, float(Covre_T) , float(Covre_C))
         # Moment_Beam(Mu , b , h , fc , fy , nd , T_cover , C_cover)
+    #with A2[1]:
+    if st.button("Analyze"):
+        Moment_Beam_A (float(As_C_A), float(As_T_A), float(b), float(h), float(fc), float(fy), 7, float(Covre_T) , float(Covre_C))
+        # Moment_Beam(Mu , b , h , fc , fy , nd , T_cover , C_cover)
+
+
     if st.sidebar.button("Logout"):
         st.session_state.clear()
         st.rerun()
