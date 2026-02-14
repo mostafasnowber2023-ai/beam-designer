@@ -1003,14 +1003,14 @@ if st.session_state.step == "welcome" and st.session_state.logged_in:
         h  = st.text_input("h = Beam height (mm)")
         b  = st.text_input("b = Beam width (mm)")
     with R:
-        Covre_C = st.text_input("As' = Compression steel cover (mm)")
-        Covre_T = st.text_input("As = tension steel cover (mm)")
-    A = st.columns([1.5,5])
+        Covre_C = st.text_input("Compression steel cover (mm)")
+        Covre_T = st.text_input("tension steel cover (mm)")
+    A = st.columns([1.5,2])
     with A[0]:
         M  = st.text_input("Mu = Ultimate Moment (KN.M)")
     with A[1]:
-        As_C_A = st.text_input("area of Compression steel (mm^2)")
-        As_T_A = st.text_input("area of tension steel (mm^2)")
+        As_C_A = st.text_input("As' = area of Compression steel (mm^2)")
+        As_T_A = st.text_input("As = area of tension steel (mm^2)")
     #A2 = st.columns([1,1])
     #with A2[0]:
     if st.button("Design"):
