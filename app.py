@@ -64,7 +64,7 @@ Your verification PIN is:
 
 ⏱️ This code is valid for 1 minute only.
 
-Mostafa Snowber.
+Mostafa Snowber115.
 Lam Executive Director.
 """)
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
