@@ -1005,6 +1005,7 @@ if st.session_state.step == "welcome" and st.session_state.logged_in:
     with R:
         Covre_C = st.text_input("Compression steel cover (mm)")
         Covre_T = st.text_input("tension steel cover (mm)")
+    st.write("---")
     A = st.columns([1.5,2])
     with A[0]:
         M  = st.text_input("Mu = Ultimate Moment (KN.M)")
