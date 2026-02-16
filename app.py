@@ -309,7 +309,7 @@ if st.session_state.step == "terms":
         supabase.table("users").insert({
             "email": st.session_state.email,
             "password": st.session_state.password,
-            "enable_disable": 'disable'
+            "enable_disable": 'disable',
             "app_open_count": '0'
         }).execute()
 
