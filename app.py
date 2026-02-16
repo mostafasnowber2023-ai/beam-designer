@@ -172,7 +172,7 @@ if st.session_state.step == "signup":
                 st.rerun()
 
     # زر الرجوع
-    if st.button("Back"):
+    if st.button("⬅ Back"):
         st.session_state.pin_sent = False  # إعادة الضبط
         st.session_state.step = "login"
         st.rerun()
@@ -229,7 +229,7 @@ if st.session_state.step == "verify":
     if remaining <= 0:
         st.error("⛔ PIN expired")
 
-        if st.button("Back"):
+        if st.button("⬅ Back"):
             # إعادة ضبط
             del st.session_state.pin_deadline
             st.session_state.step = "signup"
@@ -1079,7 +1079,7 @@ if st.session_state.step == "password":
                 #st.rerun()
                 msg.success("✅ New password has been saved successfully!")
 
-    if st.button("Back"):
+    if st.button("⬅ Back"):
         st.session_state.step = "welcome"
         st.rerun()
 
@@ -1137,6 +1137,6 @@ if st.session_state.step == "terms0":
     """)
     st.warning("By using this software, you agree to the Terms of Use.")
 
-    if st.button("Back"):
+    if st.button("⬅ Back"):
         st.session_state.step = "welcome"
         st.rerun()
