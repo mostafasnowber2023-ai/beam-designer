@@ -310,6 +310,7 @@ if st.session_state.step == "terms":
             "email": st.session_state.email,
             "password": st.session_state.password,
             "enable_disable": 'disable'
+            "app_open_count": 0
         }).execute()
 
         st.session_state.logged_in = False
