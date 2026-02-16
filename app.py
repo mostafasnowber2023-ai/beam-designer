@@ -1,8 +1,13 @@
+
+
+# code  A14FB15  # Monday 16/2/2026
+
+
 # هذا الكود جاهز للنشر 
 # يحسب المومنت 
 # تصميم 
 # تحليل 
-
+#    streamlit run 1.py
 
 import streamlit as st
 from supabase import create_client
@@ -101,6 +106,11 @@ if st.session_state.step == "login":
             st.session_state.step = "welcome"
             st.session_state.email = email
             st.session_state.password = password
+
+            response = supabase.table("users").select("app_open_count").eq("email", email).single().execute()
+            count = response.data["app_open_count"]
+            supabase.table("users").update({"app_open_count": (1 + count)}).eq("email", email).execute()
+
             st.rerun()
 
         elif resD.data:
@@ -325,6 +335,7 @@ if st.session_state.step == "LO":
     st.markdown(
         '''
         <p style="font-size:22px; font-weight:bold; text-align:center;">
+        Error code 217 <br>
         Houston, we’ve detected a system anomaly.<br>
         The application is currently offline while our engineers work to restore full operational status.
         </p>
@@ -341,7 +352,6 @@ if st.session_state.step == "LO":
     #""")
     #st.write("---")
     #st.info("After payment, your account will be activated and you will be able to log in immediately.")
-    
 
     if st.button("Logout"):
         st.session_state.step = "login"
@@ -686,7 +696,7 @@ def Strain_Diagram(d , c , ds , D_A = 0):
     # عرض الصورة في Streamlit
     #st.image(img, caption="Singley Reinforced Beam Section", width=250)
     w = st.columns([1,2.9,1])
-    with w[1]:st.image(img, caption="Singley Reinforced Beam Section", width=250)
+    with w[1]:st.image(img, caption="Strain Diagram", width=250)
     # #################################################################
 
 # =================== Moment_Beam() =====================
@@ -866,10 +876,10 @@ def asd ( a,As_C_A , As_T_A , b , h , fc , fy , T_cover , C_cover ,d_C,d_T, pr='
         if As_C_A != 0:
             st.latex(rf"Total \; compression \; force = C_s + C_c = {total_compression:.1f}\; KN")
     E = T / total_compression 
-    Error_ = round(abs(E-1) * 100,0)
+    Error_ = round(abs(E-1) * 100,4)
     if pr == 'print':
         if As_C_A != 0 :
-            st.latex(rf"""\frac{{T = {T:.1f}}}{{C = {total_compression:.1f}}}= {E:.2f} \Rightarrow Error = {Error_:.0f}\; \% """)
+            st.latex(rf"""\frac{{T = {T:.1f}}}{{C = {total_compression:.1f}}}= {E:.4f} \Rightarrow Error = {Error_:.2f}\; \% """)
             st.markdown("---")
             st.latex(rf"Try\; a\; new\; value\; of, a:")
     if pr == 'values' :
@@ -879,9 +889,9 @@ def asd ( a,As_C_A , As_T_A , b , h , fc , fy , T_cover , C_cover ,d_C,d_T, pr='
         #st.latex(rf""" C_s = {Cs:.1f}\; KN """)
         st.latex(rf""" \Rightarrow\;\; C = {total_compression:.1f}\; KN \;\; , \;\;  T = {T:.1f}\; KN """)
         E = T / total_compression 
-        Error_ = round(abs(E-1) * 100,0)
+        Error_ = round(abs(E-1) * 100,4)
         if As_C_A != 0 :
-            st.latex(rf"""\frac{{T = {T:.1f}}}{{C = {total_compression:.1f}}}= {E:.2f} \Rightarrow Error = {Error_:.0f}\; \% """)
+            st.latex(rf"""\frac{{T = {T:.1f}}}{{C = {total_compression:.1f}}}= {E:.4f} \Rightarrow Error = {Error_:.2f}\; \% """)
             prin("""You can recalculate a new value for a to achieve a lower error %, but this is sufficient for now.""")
         M_by_phi = (Cc*(d_T-0.5*a)+Cs*(d_T-d_C))/1000
         return epsilon_s , M_by_phi
@@ -952,7 +962,7 @@ def Moment_Beam_A( As_C_A , As_T_A , b , h , fc , fy , nd , T_cover , C_cover) :
         c = \frac{{a}}{{\beta_1}}
         = {C:.1f} mm
         """)
-        Strain_Diagram(d_T , C ,d_C , D_A = 1)
+        Strain_Diagram(d_T , C ,d_C , D_A = 7)
         epsilon_t = round ((0.003/C)*(d_T-C),5)
         st.latex(rf"\varepsilon_t = {epsilon_t}")
 
@@ -989,36 +999,45 @@ def Moment_Beam_A( As_C_A , As_T_A , b , h , fc , fy , nd , T_cover , C_cover) :
         st.latex(rf"0.005 \le \varepsilon_s \Rightarrow \phi = {phi:.2f}")
     M = M_by_phi *phi
     st.latex(rf"""\phi M_n = \phi \left[ C_c \left( d - \frac{{a}}{{2}} \right) + C_s (d - d') \right] = {M:.2f} \;KNM""")
+    st.latex(rf"""\Rightarrow \phi M_n = {M:.2f} \;KNM""")
 
 
 # ================= WELCOME =================
 if st.session_state.step == "welcome" and st.session_state.logged_in:
     #st.success(f"Welcome {st.session_state.email}")
     #st.success(f"Beam Designer")
+    st.write("---")
+    st.write("→ All these values must be entered in this section :")
+    st.write('')
     L , m , R = st.columns([1.5,1,1])
     with L:
         fc = st.text_input("fc' = Concrete compressive strength (Mpa)")
-        fy = st.text_input("fy = (Mpa)")
+        fy = st.text_input("fy = Steel yielding strength (Mpa)")
     with m:
         h  = st.text_input("h = Beam height (mm)")
         b  = st.text_input("b = Beam width (mm)")
     with R:
         Covre_C = st.text_input("Compression steel cover (mm)")
-        Covre_T = st.text_input("tension steel cover (mm)")
+        Covre_T = st.text_input("Tension steel cover (mm)")
     st.write("---")
-    A = st.columns([1.5,2])
+    st.write("→ If you want Design, enter the ultimate moment (Mu).")
+    st.write("→ If you want Analysis, enter the bottom and top reinforcement areas (As and As').")
+    A = st.columns([2,2])
     with A[0]:
+        st.markdown("<h5 style='text-align: center;'>For Design</h5>", unsafe_allow_html=True)
         M  = st.text_input("Mu = Ultimate Moment (KN.M)")
     with A[1]:
-        As_C_A = st.text_input("As' = area of Compression steel (mm^2)")
-        As_T_A = st.text_input("As = area of tension steel (mm^2)")
+        st.markdown("<h5 style='text-align: center;'>For Analysis</h5>", unsafe_allow_html=True)
+        As_C_A = st.text_input("As' = Area of Compression steel (mm^2)")
+        As_T_A = st.text_input("As = Area of tension steel (mm^2)")
+    st.write("---")
     #A2 = st.columns([1,1])
     #with A2[0]:
     if st.button("Design"):
         Moment_Beam (float(M), float(b), float(h), float(fc), float(fy), 7, float(Covre_T) , float(Covre_C))
         # Moment_Beam(Mu , b , h , fc , fy , nd , T_cover , C_cover)
     #with A2[1]:
-    if st.button("Analyze"):
+    if st.button("Analysis"):
         Moment_Beam_A (float(As_C_A), float(As_T_A), float(b), float(h), float(fc), float(fy), 7, float(Covre_T) , float(Covre_C))
         # Moment_Beam(Mu , b , h , fc , fy , nd , T_cover , C_cover)
 
@@ -1083,7 +1102,6 @@ if st.session_state.step == "password":
     if st.button("⬅ Back"):
         st.session_state.step = "welcome"
         st.rerun()
-
 
 
 
