@@ -109,7 +109,7 @@ if st.session_state.step == "login":
 
             response = supabase.table("users").select("app_open_count").eq("email", email).single().execute()
             count = response.data["app_open_count"]
-            supabase.table("users").update({"app_open_count": (1 + count)}).eq("email", email).execute()
+            supabase.table("users").update({"app_open_count": str(1 + int(count))}).eq("email", email).execute()
 
             st.rerun()
 
@@ -310,7 +310,7 @@ if st.session_state.step == "terms":
             "email": st.session_state.email,
             "password": st.session_state.password,
             "enable_disable": 'disable'
-            "app_open_count": 0
+            "app_open_count": '0'
         }).execute()
 
         st.session_state.logged_in = False
